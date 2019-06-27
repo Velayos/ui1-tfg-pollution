@@ -1,0 +1,17 @@
+01,Dióxido de Azufre,SO2,µg/m 3,38,Fluorescencia ultravioleta
+06,Monóxido de Carbono,CO,mg/m3,48,Absorción infrarroja
+07,Monóxido de Nitrógeno,NO,µg/m3,08,Quimioluminiscencia
+08,Dióxido de Nitrógeno,NO2,µg/m3,08,Id.
+09,Partículas < 2.5 µm,PM2.5,µg/m3,47,Microbalanza
+10,Partículas < 10 µm,PM10,µg/m3,47,Id.
+12,Óxidos de Nitrógeno,NOx,µg/m3,08,Quimioluminiscencia
+14,Ozono,O3,µg/m3,06,Absorción ultravioleta
+20,Tolueno,TOL,µg/m3,59,Cromatografía de gases
+30,Benceno,BEN,µg/m3,59,Id.
+35,Etilbenceno,EBE,µg/m3,59,Id.
+37,Metaxileno,MXY,µg/m3,59,Id.
+38,Paraxileno,PXY,µg/m3,59,Id.
+39,Ortoxileno,OXY,µg/m3,59,Id.
+42,Hidrocarburos totales (hexano),TCH,mg/m3,02 Ionización de llama
+43,Metano,CH4,mg/m3,02,Id.
+44,Hidrocarburos no metánicos (hexano),NMHC,mg/m3,02,Id
