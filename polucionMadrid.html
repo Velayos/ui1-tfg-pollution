@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TFG Jesús Velayos Herrero</title>
+    <meta charset="ISO-8859-1" />
+    <link 
+        rel="stylesheet" 
+        href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js" charset="ISO-8859-1"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"
+        integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+        crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
+        integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
+        crossorigin="" charset="ISO-8859-1"></script>
+</head>
+<body>
+
+    
+    <div id="map" style="width: 1200px; height: 600px"></div>
+
+    <script[]
+        src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js">
+    </script>
+
+    <script>
+        $.get("http://63.33.136.20:8080/FROST-Server/v1.0/Things?$count=true&$select=name&$expand=Locations($select=name,location),Datastreams($select=name,unitOfMeasurement;$expand=Observations($select=result,phenomenonTime;$orderby=phenomenonTime%20desc;$top=1))",function(response, status)        
+        { 
+            /* consulto los datos de todas las posiciones para construir el array que hara que leaflet muestre las posiciones
+            así como los valores de la ultima medicion */
+            JSON.stringify(response);   
+            var texto = "";
+            var planes = []; 
+            var elemPlan = [];                 
+            var map = L.map('map').setView([40.416944,-3.7122567], 12);
+            var localizacion = "";
+            var nom = "";
+            for(var i = 0; i < Object.keys(response["value"]).length; i++) {    
+                var_x = response["value"][i].Locations[0].location.coordinates[0];
+                var_y = response["value"][i].Locations[0].location.coordinates[1];         
+                localizacion = "";
+                for (var j = 0; j < Object.keys(response["value"][i].Datastreams).length; j++) {
+                    if (response["value"][i].Locations[0]["name"] == localizacion) {
+                        texto = texto.concat(texto = "");
+                    } else {
+                        texto = "<p><b><u>";
+                        nom = response["value"][i].Locations[0]["name"];
+                        //Se valida los nombres para eliminar caracteres extraños devueltos por Frost
+                        if (response["value"][i].Locations[0]["name"].substring(0,4) == 'Avda') {
+                            nom = "Avda. Ram&oacute;n y Cajal";
+                        } else if(response["value"][i].Locations[0]["name"].substring(0,7) == 'Pza. El'){ nom = "Pza. El&iacute;ptica";
+                        } else if(response["value"][i].Locations[0]["name"] == 'Pza. de España'){ 
+                            nom = "Pza. de Espa&ntilde;a";
+                        }
+                        texto = texto.concat(nom);
+                        texto = texto.concat("</u></b></p>");  
+                    };
+                    localizacion = response["value"][i].Locations[0]["name"];                    
+                    texto = texto.concat("<p><b>");
+                    texto = texto.concat(response["value"][i].Datastreams[j].unitOfMeasurement.symbol);
+                    texto = texto.concat("</b>: <i>");
+                    texto = texto.concat(response["value"][i].Datastreams[j].Observations[0].result);
+                    texto = texto.concat(" ");
+                    if(response["value"][i].Datastreams[j].unitOfMeasurement.name.length > 5) {
+                        texto = texto.concat("&microg/m3");
+                    } else {
+                        texto = texto.concat(response["value"][i].Datastreams[j].unitOfMeasurement.name);
+                    };
+                    texto = texto.concat("</i> (");
+                    texto = texto.concat(response["value"][i].Datastreams[j].Observations[0].phenomenonTime.substring(11,16));
+                    texto = texto.concat(") (");
+                    texto = texto.concat(response["value"][i].Datastreams[j].Observations[0].phenomenonTime.substring(8,10));
+                    texto = texto.concat("/");
+                    texto = texto.concat(response["value"][i].Datastreams[j].Observations[0].phenomenonTime.substring(5,7));
+                    texto = texto.concat("/");
+                    texto = texto.concat(response["value"][i].Datastreams[j].Observations[0].phenomenonTime.substring(0,4));
+                    texto = texto.concat(")</p>");
+                }
+                
+                elemPlan = [];
+                elemPlan.push(texto);
+                elemPlan.push(var_y);
+                elemPlan.push(var_x);
+                planes.push(elemPlan);
+            };            
+            console.log(planes);
+            mapLink = 
+                '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+            L.tileLayer(
+                'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; ' + mapLink + ' Contributors',
+                maxZoom: 18,
+                }).addTo(map);            
+            for (var i = 0; i < planes.length; i++) {
+                marker = new L.marker([planes[i][1],planes[i][2]])
+                    .bindPopup(planes[i][0])
+                    .addTo(map);                
+            };
+        });
+   
+    </script>
+</body>
+</html>
